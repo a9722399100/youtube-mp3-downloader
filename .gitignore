@@ -1,17 +1,18 @@
-# Python
+# Python 編譯檔案與快取
 __pycache__/
 *.py[cod]
 
-# 本機設定
-.env
-.DS_Store
-
-# 虛擬環境
+# 虛擬環境（不上傳）
 venv/
 
-# 下載與輸出檔案
+# 忽略 mp3 實際下載內容，但保留資料夾和 .keep 檔
 downloads/*
 !downloads/.keep
-*.mp3
-log.txt
-failed.txt
+
+# 保留執行產生的 log 和失敗紀錄
+!log.txt
+!failed.txt
+
+# 本機設定檔案
+.env
+.DS_Store
