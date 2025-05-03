@@ -1,13 +1,13 @@
 # 🎵 YouTube 歌曲自動下載工具
 
-本專案是一個以 Python 實作的自動化工具，根據 `歌單.txt` 批次搜尋 YouTube 上的歌曲，自動下載為 `.mp3` 並儲存至 `downloads/` 資料夾。
+本專案是一個以 Python 實作的自動化工具，根據 `歌單.txt` 批次搜尋 YouTube 上的歌曲，自動下載為 `.mp3` 並儲存至指定資料夾。
 
 ## 🚀 功能特點
 
 - 📄 讀取本地 `歌單.txt`，逐行搜尋並下載歌曲
 - 🔍 使用 Fuzzy Matching 自動選擇相似度最高的影片
 - 🎧 轉換為 `.mp3` 音訊格式（使用 ffmpeg）
-- 📂 自動存入 `downloads/` 並清理非法檔名
+- 📂 可自訂輸出資料夾，支援 CLI 參數操作
 - 🪵 支援 log 紀錄與失敗歌曲備份 (`log.txt`, `failed.txt`)
 
 ## 📦 環境需求
@@ -22,18 +22,26 @@ pip install -r requirements.txt
 
 ## 🛠 使用方式
 
-1. 將你的歌名清單寫入 `歌單.txt`，例如：
-```
-陪我看日出（蔡淳佳）
-碼頭惜別（葉啟田）
-```
+### ✅ CLI 執行方式（建議）
 
-2. 執行程式：
 ```bash
-python download_music.py
+python download_music.py -i 歌單.txt -o downloads -l log.txt
 ```
 
-3. 成功轉檔的 mp3 檔案將會出現在 `downloads/` 資料夾。
+支援參數如下：
+
+| 參數 | 說明 |
+|------|------|
+| `-i`, `--input` | 指定歌單檔案，預設為 `歌單.txt` |
+| `-o`, `--output` | 指定輸出資料夾，預設為 `downloads/` |
+| `-l`, `--log` | 指定 log 檔案名稱，預設為 `log.txt` |
+| `--dry-run` | 只模擬搜尋，不下載 |
+
+### ✅ Docker 執行方式
+
+```bash
+docker run --rm -v "$PWD:/app" youtube-mp3-downloader   python download_music.py -i 歌單.txt -o downloads
+```
 
 ## 📁 專案結構簡述
 
@@ -46,16 +54,16 @@ python download_music.py
 ├── log.txt                 # 執行記錄
 ├── failed.txt              # 下載失敗歌曲
 ├── requirements.txt        # 套件清單
+├── Dockerfile              # Docker 容器執行設定
 ├── README.md               # 使用說明
 └── .gitignore              # Git 忽略規則
 ```
 
-## 🧠 進階方向（可選）
+## 🧠 進階方向
 
-- 將工具包裝成 GUI
-- 使用 Docker 容器化
 - 加入 MP3 ID3 metadata
-- 實作 Web API 版本
+- 使用 Docker Compose 自動掛載歌單與輸出路徑
+- 實作 GUI 或 Web API 介面
 
 ## 📄 授權 License
 

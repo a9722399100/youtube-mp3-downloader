@@ -3,14 +3,23 @@ from fuzzywuzzy import fuzz
 import os
 import re
 import logging
+import argparse
 
-# === 準備資料夾 ===
-DOWNLOAD_DIR = os.path.join(os.path.dirname(__file__), "downloads")
+# === 解析命令列參數 ===
+parser = argparse.ArgumentParser(description="YouTube 自動 mp3 下載工具")
+parser.add_argument('-i', '--input', type=str, default='歌單.txt', help='指定歌單檔案路徑')
+parser.add_argument('-o', '--output', type=str, default='downloads', help='指定輸出資料夾')
+parser.add_argument('-l', '--log', type=str, default='log.txt', help='指定 log 檔案名稱')
+parser.add_argument('--dry-run', action='store_true', help='只顯示搜尋結果不下載')
+args = parser.parse_args()
+
+DOWNLOAD_DIR = os.path.abspath(args.output)
+LOG_FILE = args.log
 os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 
 # === 設定 logging ===
 logging.basicConfig(
-    filename='log.txt',
+    filename=LOG_FILE,
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
@@ -20,7 +29,7 @@ def record_failure(song_name):
     with open('failed.txt', 'a', encoding='utf-8') as f:
         f.write(song_name + '\n')
 
-# === 清理檔案名稱（移除非法字元並取代空白）===
+# === 清理檔案名稱 ===
 def clean_filename(filename):
     filename = re.sub(r'[<>:"/\\|?*⧸]', '', filename)
     filename = filename.replace(' ', '_').replace('　', '_')
@@ -55,7 +64,6 @@ def search_best_match(song_name):
             best_match = title
             best_url = url
 
-    # 避免低相似度誤判（可依需求調整門檻）
     if best_score < 60:
         logging.warning(f"無合適影片匹配: {song_name}（最高相似度 {best_score}%）")
         return None, None
@@ -72,6 +80,10 @@ def download_song(song_name):
         record_failure(song_name)
         return
 
+    if args.dry_run:
+        print(f"[Dry Run] 🔍 準備下載: {best_title} ({video_url})")
+        return
+
     ydl_opts = {
         'format': 'bestaudio/best',
         'outtmpl': os.path.join(DOWNLOAD_DIR, '%(title)s.%(ext)s'),
@@ -80,8 +92,6 @@ def download_song(song_name):
             'preferredcodec': 'mp3',
             'preferredquality': '192',
         }],
-        # 如需指定 ffmpeg 位置可啟用以下行
-        # 'ffmpeg_location': '/usr/bin/ffmpeg',
         'quiet': True,
         'noplaylist': True,
     }
@@ -115,12 +125,12 @@ def download_from_text_file(filename):
 
 # === 主程式進入點 ===
 def main():
-    playlist_file = os.path.join(os.path.dirname(__file__), "歌單.txt")
+    playlist_file = args.input
     if os.path.exists(playlist_file):
-        print(f"📄 找到歌單檔案: {playlist_file}")
+        print(f"📄 使用歌單檔案: {playlist_file}")
         download_from_text_file(playlist_file)
     else:
-        print("❌ 沒有找到 '歌單.txt'，請確認檔案存在")
+        print(f"❌ 找不到指定的歌單檔案: {playlist_file}")
 
 if __name__ == "__main__":
     main()

@@ -5,14 +5,14 @@ __pycache__/
 # 虛擬環境（不上傳）
 venv/
 
-# 忽略 mp3 實際下載內容，但保留資料夾和 .keep 檔
+# 忽略 mp3 下載內容，但保留 .keep
 downloads/*
 !downloads/.keep
 
-# 保留執行產生的 log 和失敗紀錄
+# 保留 log 檔與失敗記錄
 !log.txt
 !failed.txt
 
-# 本機設定檔案
+# 忽略本機設定檔
 .env
 .DS_Store
