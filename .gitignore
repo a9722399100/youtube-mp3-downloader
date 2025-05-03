@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# 本機設定
+.env
+.DS_Store
+
+# 虛擬環境
+venv/
+
+# 下載與輸出檔案
+downloads/
+*.mp3
+log.txt
+failed.txt
