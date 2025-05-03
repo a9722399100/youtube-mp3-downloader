@@ -40,7 +40,9 @@ python download_music.py
 ```
 .
 ├── download_music.py       # 主程式
+├── 歌單.txt                 # 歌曲清單（使用者輸入）
 ├── downloads/              # 儲存下載檔案
+│   └── .keep               # 保留資料夾
 ├── log.txt                 # 執行記錄
 ├── failed.txt              # 下載失敗歌曲
 ├── requirements.txt        # 套件清單
